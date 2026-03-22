@@ -1,26 +1,34 @@
 name: Sync to Hugging Face hub
+
 on:
   push:
     branches: [main]
-
-  # to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 jobs:
   sync-to-hub:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
           lfs: true
 
+      # ✅ FIX: Git identity add karo
+      - name: Set Git identity
+        run: |
+          git config --global user.name "rajats2468"
+          git config --global user.email "rudradna2468@gmail.com"
+
       - name: Pull from Hugging Face hub
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
-        run: git pull https://rajats07:$HF_TOKEN@huggingface.co/spaces/rajats07/Search_Engine_llm main --rebase
+        run: |
+          git pull https://rajats07:$HF_TOKEN@huggingface.co/spaces/rajats07/Search_Engine_llm main --rebase
 
       - name: Push to hub
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
-        run: git push https://rajats07:$HF_TOKEN@huggingface.co/spaces/rajats07/Search_Engine_llm main
+        run: |
+          git push https://rajats07:$HF_TOKEN@huggingface.co/spaces/rajats07/Search_Engine_llm main
