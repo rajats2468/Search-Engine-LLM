@@ -1,4 +1,4 @@
-name: Sync to Hugging Face hub
+name: Sync to Hugging Face Space
 
 on:
   push:
@@ -10,25 +10,23 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      # 1️⃣ Checkout GitHub repo
+      - name: Checkout repository
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
           lfs: true
 
-      # ✅ FIX: Git identity add karo
-      - name: Set Git identity
+      # 2️⃣ Set Git identity (required)
+      - name: Configure Git
         run: |
           git config --global user.name "rajats2468"
           git config --global user.email "rudradna2468@gmail.com"
 
-      - name: Pull from Hugging Face hub
+      # 3️⃣ Push to Hugging Face (force sync)
+      - name: Push to Hugging Face Space
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
-          git pull https://rajats07:$HF_TOKEN@huggingface.co/spaces/rajats07/Search_Engine_llm main
-
-      - name: Push to hub
-        env:
-          HF_TOKEN: ${{ secrets.HF_TOKEN }}
-        run: |
-          git push https://rajats07:$HF_TOKEN@huggingface.co/spaces/rajats07/Search_Engine_llm main
+          git remote add hf https://rajats07:$HF_TOKEN@huggingface.co/spaces/rajats07/Search_Engine_llm
+          git push hf main --force
